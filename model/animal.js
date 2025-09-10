@@ -42,6 +42,7 @@ const treatmentSchema = new Schema({
     status:{
         type:String,
         enum:['active','completed'],
+        default:'active',
     },
     reason:{
         type:String,
@@ -51,7 +52,8 @@ const treatmentSchema = new Schema({
     },
     effectiveness:{
         type:String,
-        enum:['successful','unsuccessful']
+        enum:['successful','unsuccessful'],
+        default:'successful',
     },
     
 },{timestamps:true})
