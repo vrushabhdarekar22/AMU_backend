@@ -5,17 +5,17 @@ const Drug = require('../../model/drug');
 
 async function addTreatment(req,res) {
     try{
-        const {animalId,disease} = req.body;
+        const {animalId,treatments,disease} = req.body;
         const vetId = req.user?._id || req.query.vetId;
 
         if(!vetId){
-            return res.status.json({error:"vet id is required"});
+            return res.status(400).json({error:"vet id is required"});
         }
 
         //1.create disease document
         const diseaseDoc = await Disease.create({
             name:disease.name,
-            symptoms:disease.symptoms || "",
+            symptoms:disease.symptoms || [],
         });
 
         const medicinesDocs = [];
@@ -34,11 +34,13 @@ async function addTreatment(req,res) {
                 ...med,
                 name:drugDoc._id,
             });
+        }
 
             //3.creating animal if not exist
             let animal = await Animal.findOne({animalId});
             if(!animal){
                 animal = await Animal.create({
+                    animalId,
                     species:req.body.species || "unknown",
                     age:req.body.age || null,
                     weight: req.body.weight || null,
@@ -56,7 +58,7 @@ async function addTreatment(req,res) {
                 vet: vetId,
                 startDate: treatments.startDate,
                 endDate: treatments.endDate,
-                medicines: medicineDocs,
+                medicines: medicinesDocs,
                 status: treatments.status,
                 reason: treatments.reason,
                 notes: treatments.notes,
@@ -67,10 +69,10 @@ async function addTreatment(req,res) {
             animal.treatments.push(newTreatment);
             await animal.save();
 
-            res.status(201).json({message:"tretment added successfully",animal});
+            res.status(201).json({message:"treatment added successfully",animal});
 
 
-        }
+        
 
     }catch(error){
         res.status(500).json({ error: error.message });
