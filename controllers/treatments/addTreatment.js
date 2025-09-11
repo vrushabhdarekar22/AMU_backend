@@ -4,30 +4,34 @@ const Drug = require('../../model/drug');
 
 
 async function addTreatment(req,res) {
+    const session = await Animal.startSession();
+    session.startTransaction();
     try{
         const {animalId,treatments,disease} = req.body;
         const vetId = req.user?._id || req.query.vetId;
 
         if(!vetId){
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({error:"vet id is required"});
         }
 
         //1.create disease document
-        const diseaseDoc = await Disease.create({
+        const diseaseDoc = await Disease.create([{
             name:disease.name,
             symptoms:disease.symptoms || [],
-        });
+        }],{session});
 
         const medicinesDocs = [];
 
         //2.drug doc for each medicine
         for(const med of treatments.medicines){
-            const drugDoc = await Drug.create({
+            const [drugDoc] = await Drug.create([{
                 name: med.name,
                 category: med.category || "",
                 dosageForms: med.dosageForms || "",
                 withdrawalPeriod: med.withdrawalPeriod || "",
-            });
+            }],{session});
 
 
             medicinesDocs.push({
@@ -37,9 +41,9 @@ async function addTreatment(req,res) {
         }
 
             //3.creating animal if not exist
-            let animal = await Animal.findOne({animalId});
+            let animal = await Animal.findOne({animalId}).session(session);
             if(!animal){
-                animal = await Animal.create({
+                animal = await Animal.create([{
                     animalId,
                     species:req.body.species || "unknown",
                     age:req.body.age || null,
@@ -47,10 +51,11 @@ async function addTreatment(req,res) {
                     owner: req.body.owner,
                     disease: diseaseDoc._id,
                     treatments: [],
-                });
+                }],{session});
+                animal = animal[0];
             }else{
                 //animal already exist just we will assign disease
-                animal.disease = diseaseDoc._id;
+                animal.disease = diseaseDoc[0]._id;
             }
 
             //4.add treatment to animal
@@ -67,7 +72,11 @@ async function addTreatment(req,res) {
 
             //push newTreat in treatments
             animal.treatments.push(newTreatment);
-            await animal.save();
+            await animal.save({session});
+
+
+            await session.commitTransaction();
+            session.endSession();
 
             res.status(201).json({message:"treatment added successfully",animal});
 
@@ -75,6 +84,8 @@ async function addTreatment(req,res) {
         
 
     }catch(error){
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).json({ error: error.message });
     }
 };

@@ -4,7 +4,7 @@ const diseaseSchema = new Schema({
     name:{
         type:String,
         required:true,
-        // unique:true,
+        
     },
     symptoms:[{type:String}],
 
