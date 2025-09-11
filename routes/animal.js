@@ -5,7 +5,11 @@ const { getMonthlyTreatments } = require('../controllers/analytics/monthly');
 const { getDiseaseTrends } = require('../controllers/analytics/disease');
 const { getAllFarmersForVet } = require('../controllers/farmers/allfarmer');
 const { getFarmerCountForVet } = require('../controllers/farmers/countfarmerbyvet');
+const getClientAnimalName = require("../controllers/farmers/getClientAnimalName");
+const getClientActiveAnimalCount = require("../controllers/farmers/getClientActiveAnimalCount");
 
+router.get('/client-active-animal-count', getClientActiveAnimalCount);
+router.get('/client-animals', getClientAnimalName);
 router.get('/farmer-count', getFarmerCountForVet);
 router.get('/farmers', getAllFarmersForVet);
 router.get('/disease-trends', getDiseaseTrends);
