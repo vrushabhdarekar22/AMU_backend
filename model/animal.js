@@ -37,7 +37,21 @@ const treatmentSchema = new Schema({
         },
         waitingPeriod:{
             type:String,
-        }
+        },
+        doseLogs:[{
+            date:{
+                type:Date,
+                default:Date.now
+            },
+            timeOfDay:{
+                type:String,
+                enum:["morning","afternoon","night"],
+            },
+            given:{
+                type:Boolean,
+                default:false,
+            }
+        }]
     }],
     status:{
         type:String,

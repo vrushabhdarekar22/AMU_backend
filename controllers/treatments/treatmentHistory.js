@@ -16,7 +16,7 @@ async function getTreatmentHistory(req,res){
             return res.status(404).json({ error: "Animal not found" });
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message:"history fetched successfully",
             animalId:animalId,
             treatments:animal.treatments,

@@ -22,7 +22,7 @@ async function getTreatmentDetails(req,res){
         );
 
 
-        return res.status(201).json({
+        return res.status(200).json({
             message:"current treatment fetched successfully",
             animal: {
                 animalId: animal.animalId,
