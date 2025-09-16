@@ -20,6 +20,8 @@ async function sendSignUpOtp(req,res){
         //upsert :if exist it will update or it will create
         //new :gives updated document
 
+        console.log(`OTP for ${mobileNo} is ${otp}`); 
+
         return res.status(200).json({message:"OTP sent successfully"});
     }catch(error){
         return res.status(500).json({error:error.message});

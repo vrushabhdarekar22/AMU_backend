@@ -16,7 +16,7 @@ const {getDoseCounts} =require("../controllers/famerDashboard/doseCounts");
 const {getAnimalByDose} =require("../controllers/famerDashboard/animalListByDose");
 const {getAnimalDoseDetails} =require("../controllers/famerDashboard/animalDoseDetails");
 const {markDoseGiven} =require("../controllers/famerDashboard/doseGiven");
-
+const {getAnimalByFarmer} = require("../controllers/farmerAnimals/animalList")
 
 //account creation
 router.post("/send-otp",sendSignUpOtp);
@@ -40,5 +40,6 @@ router.get("/dose-counts",getDoseCounts);
 router.get("/animals-by-dose",getAnimalByDose);
 router.get("/dose-details",getAnimalDoseDetails);
 router.post("/dose-given",markDoseGiven);
+router.get("/view-animals",getAnimalByFarmer);
 
 module.exports = router;

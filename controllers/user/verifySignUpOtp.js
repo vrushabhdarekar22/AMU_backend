@@ -16,7 +16,7 @@ async function verifySignUpOtp(req,res){
             return res.status(400).json({error:"Invalid otp"});
         }
 
-        console.log(`OTP for ${mobileNo} is ${otp}`); 
+        
 
         if(record.expiresAt<Date.now()){
             return res.status(400).json({error:"OTP expired"});
